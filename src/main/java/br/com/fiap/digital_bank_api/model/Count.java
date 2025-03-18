@@ -108,6 +108,11 @@ public class Count {
         }
     }
     
-    
+    public void depositar(Double valor) {
+        if (valor == null || valor <= 0) {
+            throw new IllegalArgumentException("O valor do depósito deve ser positivo!");
+        }
+        this.saldo += valor;
+    }
 
 }

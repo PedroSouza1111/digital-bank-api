@@ -19,6 +19,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.server.ResponseStatusException;
 
 import br.com.fiap.digital_bank_api.model.Count;
+import br.com.fiap.digital_bank_api.model.Deposito;
 
 @RestController
 @RequestMapping("/")
@@ -39,13 +40,13 @@ public class CountController {
         return repository;
     }
 
-    @GetMapping("/count/{id}")
+    @GetMapping("/count/id/{id}")
     public Count getById(@PathVariable Long id) {
         log.info("Buscando conta " + id);
         return getCountById(id);
     }
 
-    @GetMapping("/count/{cpf}")
+    @GetMapping("/count/cpf/{cpf}")
     public Count getByCpf(@PathVariable Long cpf) {
         log.info("Buscando conta " + cpf);
         return getCountByCpf(cpf);
@@ -66,14 +67,13 @@ public class CountController {
     }
 
     //DEPÓSITO
-    @PutMapping("{id}")
-    public Count update(@PathVariable Long id, Double valor,@RequestBody Count count){
-        validarValor(valor);
-        log.info("Depositando " + valor + " na conta " + count);
+    @PutMapping("/depositar/{id}")
+    public Count update(@PathVariable Long id,@RequestBody Deposito deposito){
+        log.info("Depositando " + deposito.getValor() + " na conta " + deposito.getId() );
 
-        count.setSaldo(getCountById(id).getSaldo() + valor);
+        getCountById(id).depositar(deposito.getValor());
 
-        return count;
+        return getCountById(id);
     }
 
 
@@ -95,9 +95,4 @@ public class CountController {
                 );
     }
 
-    private void validarValor(Double valor) {
-        if (valor <= 0) {
-            throw new IllegalArgumentException("Insira um valor válido!");
-        }
-    }
 }
